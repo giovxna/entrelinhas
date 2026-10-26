@@ -11,4 +11,5 @@
     <BuildDependency Project="Entrelinhas.Application/Entrelinhas.Application.csproj" />
     <BuildDependency Project="Entrelinhas.Domain/Entrelinhas.Domain.csproj" />
   </Project>
+  <Project Path="Entrelinhas.Tests/Entrelinhas.Tests.csproj" Id="6021583e-eb10-4ec8-b204-920b540fa082" />
 </Solution>
