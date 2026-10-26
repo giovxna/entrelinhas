@@ -1,0 +1,14 @@
+<Solution>
+  <Project Path="entrelinhas.api/entrelinhas.api.csproj" DisplayName="Entrelinhas.api">
+    <BuildDependency Project="Entrelinhas.Application/Entrelinhas.Application.csproj" />
+    <BuildDependency Project="Entrelinhas.Infrastructure/Entrelinhas.Infrastructure.csproj" />
+  </Project>
+  <Project Path="Entrelinhas.Application/Entrelinhas.Application.csproj" Id="f4681a7a-0bb1-4b69-985e-5d293444833a">
+    <BuildDependency Project="Entrelinhas.Domain/Entrelinhas.Domain.csproj" />
+  </Project>
+  <Project Path="Entrelinhas.Domain/Entrelinhas.Domain.csproj" Id="cbf7a9f8-06ca-490a-8c68-b7988d1ab2f9" />
+  <Project Path="Entrelinhas.Infrastructure/Entrelinhas.Infrastructure.csproj" Id="565f57df-6167-462f-abfe-8c14bed229d2">
+    <BuildDependency Project="Entrelinhas.Application/Entrelinhas.Application.csproj" />
+    <BuildDependency Project="Entrelinhas.Domain/Entrelinhas.Domain.csproj" />
+  </Project>
+</Solution>
