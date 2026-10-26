@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="entrelinhas.api/entrelinhas.api.csproj" DisplayName="Entrelinhas.api">
+  <Project Path="entrelinhas.api/Entrelinhas.api.csproj" DisplayName="Entrelinhas.api">
     <BuildDependency Project="Entrelinhas.Application/Entrelinhas.Application.csproj" />
     <BuildDependency Project="Entrelinhas.Infrastructure/Entrelinhas.Infrastructure.csproj" />
   </Project>
