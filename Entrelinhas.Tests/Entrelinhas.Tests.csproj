@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Entrelinhas.Application\Entrelinhas.Application.csproj" />
     <ProjectReference Include="..\Entrelinhas.Domain\Entrelinhas.Domain.csproj" />
+    <ProjectReference Include="..\Entrelinhas.Infrastructure\Entrelinhas.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

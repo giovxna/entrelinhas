@@ -1,0 +1,200 @@
+Table users {
+    user_id uuid [ pk, not null ]
+    name varchar(255) [ not null ]
+    email varchar(255) [ not null, unique ]
+    password_hash varchar(255) [ not null ]
+    created_at timestamptz [ not null ]
+}
+
+Table follower {
+    follow_id uuid [ pk, not null ]
+    followed_id uuid [ not null ]
+    follower_id uuid [ not null ]
+    created_at timestamptz [ not null ]
+
+    indexes {
+        (follower_id, followed_id) [ unique ]
+    }
+
+    Note: 'CHECK ck_follower_not_self: follower_id <> followed_id'
+}
+
+Table book {
+    book_id uuid [ pk, not null ]
+    title varchar(255) [ not null ]
+    description text
+    publication_date date
+    author varchar(255)
+    api_id varchar(255) [ not null, unique ]
+    created_at timestamptz [ not null ]
+}
+
+Table bookcase {
+    bookcase_id uuid [ pk, not null ]
+    status varchar(255) [ not null, note: 'WantToRead | Reading | Read' ]
+    rating integer
+    review text
+    user_id uuid [ not null ]
+    book_id uuid [ not null ]
+    created_at timestamptz [ not null ]
+
+    indexes {
+        (user_id, book_id) [ unique ]
+    }
+}
+
+Table club {
+    club_id uuid [ pk, not null ]
+    name varchar(255) [ not null ]
+    created_at timestamptz [ not null ]
+}
+
+Table club_member {
+    club_member_id uuid [ pk, not null ]
+    user_id uuid [ not null ]
+    club_id uuid [ not null ]
+    role varchar(255) [ not null, note: 'Owner | Member' ]
+    created_at timestamptz [ not null ]
+
+    indexes {
+        (user_id, club_id) [ unique ]
+    }
+}
+
+Table cycle {
+    cycle_id uuid [ pk, not null ]
+    due date [ not null ]
+    start_date date [ not null ]
+    club_id uuid [ not null ]
+    book_id uuid [ not null ]
+    created_at timestamptz [ not null ]
+
+    Note: 'CHECK ck_cycle_due_after_start: due >= start_date'
+}
+
+Table cycle_participant {
+    cycle_participant_id uuid [ pk, not null ]
+    status varchar(255) [ not null, note: 'Reading | Finished | NotFinished' ]
+    reason text
+    club_member_id uuid [ not null ]
+    cycle_id uuid [ not null ]
+
+    indexes {
+        (club_member_id, cycle_id) [ unique ]
+    }
+}
+
+Table poll {
+    poll_id uuid [ pk, not null ]
+    closes_at timestamptz [ not null ]
+    type varchar(255) [ not null, note: 'Book | Deadline' ]
+    club_id uuid [ not null ]
+    created_at timestamptz [ not null ]
+}
+
+Table poll_option {
+    poll_option_id uuid [ pk, not null ]
+    poll_id uuid [ not null ]
+    book_id uuid
+    deadline integer
+
+    indexes {
+        (poll_option_id, poll_id) [ unique, name: 'ak_poll_option_poll_option_id_poll_id' ]
+        (poll_id, book_id) [ unique ]
+        (poll_id, deadline) [ unique ]
+    }
+
+    Note: 'CHECK ck_poll_option_book_xor_deadline: (book_id IS NULL) <> (deadline IS NULL)'
+}
+
+Table vote {
+    vote_id uuid [ pk, not null ]
+    poll_id uuid [ not null ]
+    poll_option_id uuid [ not null ]
+    user_id uuid [ not null ]
+
+    indexes {
+        (poll_id, user_id) [ unique ]
+    }
+}
+
+Table comment {
+    comment_id uuid [ pk, not null ]
+    user_id uuid [ not null ]
+    cycle_id uuid [ not null ]
+    chapter varchar(255) [ not null ]
+    text text [ not null ]
+    created_at timestamptz [ not null ]
+}
+
+Ref fk_follower_follower_id_users {
+    follower.follower_id > users.user_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_follower_followed_id_users {
+    follower.followed_id > users.user_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_bookcase_user_id_users {
+    bookcase.user_id > users.user_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_bookcase_book_id_book {
+    bookcase.book_id > book.book_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_club_member_user_id_users {
+    club_member.user_id > users.user_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_club_member_club_id_club {
+    club_member.club_id > club.club_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_cycle_club_id_club {
+    cycle.club_id > club.club_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_cycle_book_id_book {
+    cycle.book_id > book.book_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_cycle_participant_club_member_id_club_member {
+    cycle_participant.club_member_id > club_member.club_member_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_cycle_participant_cycle_id_cycle {
+    cycle_participant.cycle_id > cycle.cycle_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_poll_club_id_club {
+    poll.club_id > club.club_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_poll_option_poll_id_poll {
+    poll_option.poll_id > poll.poll_id [ delete: cascade, update: no action ]
+}
+
+Ref fk_poll_option_book_id_book {
+    poll_option.book_id > book.book_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_vote_poll_id_poll {
+    vote.poll_id > poll.poll_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_vote_poll_option_id_poll_option {
+    vote.(poll_option_id, poll_id) > poll_option.(poll_option_id, poll_id) [ delete: restrict, update: no action ]
+}
+
+Ref fk_vote_user_id_users {
+    vote.user_id > users.user_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_comment_user_id_users {
+    comment.user_id > users.user_id [ delete: restrict, update: no action ]
+}
+
+Ref fk_comment_cycle_id_cycle {
+    comment.cycle_id > cycle.cycle_id [ delete: restrict, update: no action ]
+}
